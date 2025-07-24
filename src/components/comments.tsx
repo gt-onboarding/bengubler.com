@@ -2,16 +2,18 @@
 
 import Giscus from "@giscus/react";
 import { useTheme } from "next-themes";
+import { useGT } from "gt-next/client";
 
 export function Comments() {
   const { resolvedTheme } = useTheme(); // "dark" | "light"
+  const t = useGT();
 
   return (
     <div className="mt-10">
       <Giscus
         repo="bgub/bengubler.com"
         repoId="R_kgDOMDxe6w"
-        category="Comments"
+        category={t("Comments")}
         categoryId="DIC_kwDOMDxe684CrcJf"
         mapping="pathname"
         strict="1"

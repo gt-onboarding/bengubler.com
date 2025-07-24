@@ -1,17 +1,19 @@
 import { allPosts } from "content-collections";
 import { NextRequest, NextResponse } from "next/server";
+import { getGT } from "gt-next/server";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  const t = await getGT();
 
   // Find the post
   const post = allPosts.find((p) => p.slug === slug);
 
   if (!post) {
-    return new NextResponse("Post not found", { status: 404 });
+    return new NextResponse(t("Post not found"), { status: 404 });
   }
 
   // Return the raw markdown content

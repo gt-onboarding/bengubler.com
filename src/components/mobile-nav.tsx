@@ -16,27 +16,28 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { T, Branch, useGT } from "gt-next/client";
 
-const navigation = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/about", icon: User },
+const getNavigation = (t: (content: string) => string) => [
+  { name: t("Home"), href: "/", icon: Home },
+  { name: t("About"), href: "/about", icon: User },
   {
-    name: "My Stack",
+    name: t("My Stack"),
     href: "/about/my-stack",
     icon: Code,
     isSubItem: true,
-    parent: "About",
+    parent: t("About"),
   },
-  { name: "Projects", href: "/projects", icon: FolderOpen },
+  { name: t("Projects"), href: "/projects", icon: FolderOpen },
   {
-    name: "Language Learning",
+    name: t("Language Learning"),
     href: "/language-learning",
     icon: Languages,
     isSubItem: true,
-    parent: "Projects",
+    parent: t("Projects"),
   },
-  { name: "Posts", href: "/posts", icon: FileText },
-  { name: "Contact", href: "/contact", icon: Mail },
+  { name: t("Posts"), href: "/posts", icon: FileText },
+  { name: t("Contact"), href: "/contact", icon: Mail },
 ];
 
 export function MobileNav() {
@@ -44,6 +45,8 @@ export function MobileNav() {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const t = useGT();
+  const navigation = getNavigation(t);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -88,7 +91,7 @@ export function MobileNav() {
         aria-controls="mobile-menu-popover"
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
+        <T><span className="sr-only"><Branch branch={isOpen.toString()} true="Close menu" false="Open menu" /></span></T>
       </Button>
 
       {/* Popover Menu */}
