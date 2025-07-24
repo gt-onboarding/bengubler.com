@@ -12,6 +12,8 @@ import { allPosts } from "content-collections";
 import type { Metadata } from "next";
 import { Link } from "next-view-transitions";
 import { notFound } from "next/navigation";
+import { T, Var } from "gt-next";
+import { getGT } from "gt-next/server";
 
 import { ClientTOC } from "./client-toc";
 
@@ -30,10 +32,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = allPosts.find((p) => p.slug === slug);
+  const t = await getGT();
 
   if (!post) {
     return {
-      title: "Post Not Found",
+      title: t("Post Not Found"),
     };
   }
 
@@ -116,7 +119,7 @@ export default async function PostPage({
             href="/posts"
             className="hover:text-foreground transition-colors"
           >
-            Posts
+            <T>Posts</T>
           </Link>
           <span className="mx-2">›</span>
           <span>{post.title}</span>
@@ -137,19 +140,20 @@ export default async function PostPage({
               </time>
               <span>•</span>
               <span style={getTransitionStyle(post.url, "reading-time-")}>
-                {(post as any).readingTime || "5 min read"}
+                {(post as any).readingTime || <T>5 min read</T>}
               </span>
               {post.lastUpdated && (
                 <>
                   <span>•</span>
-                  <span>
-                    Updated{" "}
-                    {post.lastUpdated.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
+                  <T>
+                    <span>
+                      Updated <Var>{post.lastUpdated.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}</Var>
+                    </span>
+                  </T>
                 </>
               )}
             </div>
@@ -159,7 +163,9 @@ export default async function PostPage({
             >
               {post.title}
               {post.archived && (
-                <span className="text-muted-foreground"> (archived)</span>
+                <T>
+                  <span className="text-muted-foreground"> (archived)</span>
+                </T>
               )}
             </h1>
           </div>
