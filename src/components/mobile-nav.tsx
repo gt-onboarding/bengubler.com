@@ -13,37 +13,42 @@ import {
   User,
   X,
 } from "lucide-react";
+import { LocaleSelector, T, useGT, Branch } from "gt-next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const navigation = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/about", icon: User },
-  {
-    name: "My Stack",
-    href: "/about/my-stack",
-    icon: Code,
-    isSubItem: true,
-    parent: "About",
-  },
-  { name: "Projects", href: "/projects", icon: FolderOpen },
-  {
-    name: "Language Learning",
-    href: "/language-learning",
-    icon: Languages,
-    isSubItem: true,
-    parent: "Projects",
-  },
-  { name: "Posts", href: "/posts", icon: FileText },
-  { name: "Contact", href: "/contact", icon: Mail },
-];
+function getNavigation(t: (key: string) => string) {
+  return [
+    { name: t("Home"), href: "/", icon: Home },
+    { name: t("About"), href: "/about", icon: User },
+    {
+      name: t("My Stack"),
+      href: "/about/my-stack",
+      icon: Code,
+      isSubItem: true,
+      parent: "About",
+    },
+    { name: t("Projects"), href: "/projects", icon: FolderOpen },
+    {
+      name: t("Language Learning"),
+      href: "/language-learning",
+      icon: Languages,
+      isSubItem: true,
+      parent: "Projects",
+    },
+    { name: t("Posts"), href: "/posts", icon: FileText },
+    { name: t("Contact"), href: "/contact", icon: Mail },
+  ];
+}
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const t = useGT();
+  const navigation = getNavigation(t);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -88,7 +93,7 @@ export function MobileNav() {
         aria-controls="mobile-menu-popover"
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
+        <T><span className="sr-only"><Branch branch={isOpen} true={t("Close menu")} false={t("Open menu")} /></span></T>
       </Button>
 
       {/* Popover Menu */}
@@ -129,9 +134,12 @@ export function MobileNav() {
             })}
           </div>
 
-          {/* Theme Toggle - Bottom */}
-          <div className="flex justify-start pt-4 mt-4 border-t border-border/40">
-            <MobileThemeToggle onThemeChange={() => setIsOpen(false)} />
+          {/* Locale Selector and Theme Toggle - Bottom */}
+          <div className="flex flex-col gap-3 pt-4 mt-4 border-t border-border/40">
+            <LocaleSelector />
+            <div className="flex justify-start">
+              <MobileThemeToggle onThemeChange={() => setIsOpen(false)} />
+            </div>
           </div>
         </div>
       )}

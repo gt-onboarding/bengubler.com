@@ -1,17 +1,19 @@
 import { gateway } from "@vercel/ai-sdk-gateway";
 import { streamText } from "ai";
 import { NextRequest } from "next/server";
+import { getGT } from "gt-next/server";
 
 export async function POST(request: NextRequest) {
   try {
     const { content, title } = await request.json();
+    const t = await getGT();
 
     if (!content) {
-      return new Response("Content is required", { status: 400 });
+      return new Response(t("Content is required"), { status: 400 });
     }
 
     // Create the ELI5 system prompt
-    const systemPrompt = `You are an expert at explaining complex topics in simple terms. 
+    const systemPrompt = t(`You are an expert at explaining complex topics in simple terms. 
 
 Your task is to explain the following blog post content as if you're talking to a 5-year-old. Use:
 - Simple words and short sentences
@@ -22,8 +24,8 @@ Your task is to explain the following blog post content as if you're talking to 
 
 Keep it engaging but accurate. Don't oversimplify to the point of being wrong.
 
-Blog post title: "${title}"
-Blog post content: ${content}`;
+Blog post title: "{title}"
+Blog post content: {content}`, { title, content });
 
     const result = streamText({
       model: gateway("groq/llama-3-8b-instruct"),
@@ -31,7 +33,7 @@ Blog post content: ${content}`;
         { role: "system", content: systemPrompt },
         {
           role: "user",
-          content: "Please explain this blog post like I'm 5 years old!",
+          content: t("Please explain this blog post like I'm 5 years old!"),
         },
       ],
     });
@@ -43,6 +45,6 @@ Blog post content: ${content}`;
     });
   } catch (error) {
     console.error("ELI5 API Error:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response(t("Internal Server Error"), { status: 500 });
   }
 }

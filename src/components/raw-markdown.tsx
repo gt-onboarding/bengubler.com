@@ -2,6 +2,7 @@
 
 import { Check, Copy, ExternalLink } from "lucide-react";
 import { useState } from "react";
+import { T, Branch, useGT } from "gt-next";
 
 interface RawMarkdownProps {
   slug: string;
@@ -10,6 +11,7 @@ interface RawMarkdownProps {
 
 export function RawMarkdown({ slug, content }: RawMarkdownProps) {
   const [copied, setCopied] = useState(false);
+  const t = useGT();
 
   const copyToClipboard = async () => {
     try {
@@ -23,9 +25,9 @@ export function RawMarkdown({ slug, content }: RawMarkdownProps) {
 
   return (
     <div className="space-y-3">
-      <h3 className="font-semibold text-sm text-foreground">
+      <T><h3 className="font-semibold text-sm text-foreground">
         View Raw (for LLMs)
-      </h3>
+      </h3></T>
       <div className="space-y-2">
         <a
           href={`/posts/${slug}.md`}
@@ -34,23 +36,29 @@ export function RawMarkdown({ slug, content }: RawMarkdownProps) {
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ExternalLink className="h-4 w-4" />
-          View raw markdown
+          <T>View raw markdown</T>
         </a>
         <button
           onClick={copyToClipboard}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors w-full justify-start"
         >
-          {copied ? (
-            <>
-              <Check className="h-4 w-4 text-green-500" />
-              Copied!
-            </>
-          ) : (
-            <>
-              <Copy className="h-4 w-4" />
-              Copy raw content
-            </>
-          )}
+          <T>
+            <Branch
+              branch={copied.toString()}
+              true={
+                <>
+                  <Check className="h-4 w-4 text-green-500" />
+                  Copied!
+                </>
+              }
+              false={
+                <>
+                  <Copy className="h-4 w-4" />
+                  Copy raw content
+                </>
+              }
+            />
+          </T>
         </button>
       </div>
     </div>
