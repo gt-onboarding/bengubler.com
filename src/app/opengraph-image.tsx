@@ -1,6 +1,12 @@
 import { ImageResponse } from "next/og";
+import { getGT } from "gt-next/server";
 
 // Image metadata
+export async function generateAlt() {
+  const t = await getGT();
+  return t("Ben Gubler - Web Developer");
+}
+
 export const alt = "Ben Gubler - Web Developer";
 export const size = {
   width: 1200,
@@ -10,6 +16,7 @@ export const contentType = "image/png";
 
 // Image generation
 export default async function Image() {
+  const t = await getGT();
   return new ImageResponse(
     (
       <div
@@ -71,7 +78,7 @@ export default async function Image() {
               fontWeight: "500",
             }}
           >
-            Hello! Ahoj! Привет!
+            {t("Hello! Ahoj! Привет!")}
           </div>
         </div>
 
@@ -119,7 +126,7 @@ export default async function Image() {
               marginBottom: "40px",
             }}
           >
-            Web Developer, AI Student & Language Enthusiast
+            {t("Web Developer, AI Student & Language Enthusiast")}
           </p>
 
           {/* Decorative element */}
