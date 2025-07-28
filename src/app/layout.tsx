@@ -10,79 +10,89 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import "./globals.css";
+import { getLocale, getGT } from "gt-next/server";
+import { GTProvider, LocaleSelector, T } from "gt-next";
 
 const inter = Inter({ subsets: ["latin"] });
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  subsets: ["latin"]
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Ben Gubler",
-    template: "%s - Ben Gubler",
-  },
-  description:
-    "Ben Gubler's personal website. Web Development Intern at Vercel, studying AI and human languages at BYU. Thoughts on web development, AI, and building things that matter.",
-  keywords: [
-    "Ben Gubler",
-    "web developer",
-    "Vercel",
-    "Next.js",
-    "React",
-    "TypeScript",
-    "AI",
-    "machine learning",
-    "BYU",
-  ],
-  authors: [{ name: "Ben Gubler", url: "https://bengubler.com" }],
-  creator: "Ben Gubler",
-  publisher: "Ben Gubler",
-  metadataBase: new URL("https://bengubler.com"),
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://bengubler.com",
-    title: "Ben Gubler",
-    description:
-      "Ben Gubler's personal website. Web Development Intern at Vercel, studying AI and human languages at BYU.",
-    siteName: "Ben Gubler",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Ben Gubler",
-    description:
-      "Ben Gubler's personal website. Web Development Intern at Vercel, studying AI and human languages at BYU.",
-    creator: "@bgub_",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getGT();
+
+  return {
+    title: {
+      default: "Ben Gubler",
+      template: "%s - Ben Gubler"
+    },
+    description: t(
+      "Ben Gubler's personal website. Web Development Intern at Vercel, studying AI and human languages at BYU. Thoughts on web development, AI, and building things that matter."
+    ),
+    keywords: [
+      "Ben Gubler",
+      t("web developer"),
+      "Vercel",
+      "Next.js",
+      "React",
+      "TypeScript",
+      "AI",
+      t("machine learning"),
+      "BYU"
+    ],
+
+    authors: [{ name: "Ben Gubler", url: "https://bengubler.com" }],
+    creator: "Ben Gubler",
+    publisher: "Ben Gubler",
+    metadataBase: new URL("https://bengubler.com"),
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      url: "https://bengubler.com",
+      title: "Ben Gubler",
+      description: t(
+        "Ben Gubler's personal website. Web Development Intern at Vercel, studying AI and human languages at BYU."
+      ),
+      siteName: "Ben Gubler"
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Ben Gubler",
+      description: t(
+        "Ben Gubler's personal website. Web Development Intern at Vercel, studying AI and human languages at BYU."
+      ),
+      creator: "@bgub_"
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-};
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1
+      }
+    }
+  };
+}
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({
+  children
+
+
+}: {children: React.ReactNode;}) {
   return (
-    <ViewTransitions>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.className} ${geistMono.variable}`}>
+  <ViewTransitions>
+      <html suppressHydrationWarning lang={await getLocale()}>
+        <body className={`${inter.className} ${geistMono.variable}`}><GTProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange
-          >
+            disableTransitionOnChange>
+
             {/* Outermost wrapper for max-width and centering */}
             <div className="w-full max-w-screen-xl mx-auto bg-background">
               <div className="flex min-h-screen">
@@ -101,14 +111,17 @@ export default function RootLayout({
                             alt="Ben Gubler"
                             width={32}
                             height={32}
-                            className="object-cover"
-                          />
+                            className="object-cover" />
+
                         </div>
-                        <span className="text-lg font-semibold">
+                        <T><span className="text-lg font-semibold">
                           Ben Gubler
-                        </span>
+                        </span></T>
                       </Link>
-                      <MobileNav />
+                      <div className="flex items-center space-x-4">
+                        <LocaleSelector />
+                        <MobileNav />
+                      </div>
                     </div>
                   </header>
                   {/* Page Content Wrapper */}
@@ -121,7 +134,7 @@ export default function RootLayout({
           </ThemeProvider>
           <Analytics />
           <SpeedInsights />
-        </body>
+        </GTProvider></body>
       </html>
     </ViewTransitions>
   );

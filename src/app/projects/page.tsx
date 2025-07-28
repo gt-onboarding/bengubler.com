@@ -1,21 +1,30 @@
 import { ProjectCard } from "@/components/project-card";
 import type { Metadata } from "next";
+import { getGT } from "gt-next/server";
+import { T, useGT } from "gt-next";
+import { InlineTranslationOptions } from "gt-next/types";
 
-export const metadata: Metadata = {
-  title: "Projects - Ben Gubler",
-  description:
-    "A collection of Ben Gubler's projects, from featured work to experimental builds.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getGT();
+  
+  return {
+    title: t("Projects - Ben Gubler"),
+    description: t(
+      "A collection of Ben Gubler's projects, from featured work to experimental builds."
+    ),
+  };
+}
 
-const projectsData = [
+const getProjectsData = (t: (content: string, options?: InlineTranslationOptions) => string) => [
   {
-    category: "Featured",
+    category: t("Featured"),
     items: [
       {
         id: "1",
         title: "Eta",
-        description:
-          "A super-fast embedded JS template engine that supports Deno.",
+        description: t(
+          "A super-fast embedded JS template engine that supports Deno."
+        ),
         tech: ["JavaScript", "TypeScript", "Template Engine"],
         links: {
           demo: "https://eta.js.org",
@@ -26,8 +35,9 @@ const projectsData = [
       {
         id: "2",
         title: "Decline App",
-        description:
-          "A website for practicing Czech, Slovak, and Russian noun declensions.",
+        description: t(
+          "A website for practicing Czech, Slovak, and Russian noun declensions."
+        ),
         tech: ["Next.js", "React", "TypeScript"],
         links: {
           demo: "https://decline.vercel.app/",
@@ -38,8 +48,9 @@ const projectsData = [
       {
         id: "3",
         title: "GOM",
-        description:
-          "Pip package with CLI tool to monitor GPU usage across Docker containers. A minimalistic alternative to 'nvidia-smi'.",
+        description: t(
+          "Pip package with CLI tool to monitor GPU usage across Docker containers. A minimalistic alternative to 'nvidia-smi'."
+        ),
         tech: ["Python", "Docker", "CLI"],
         links: {
           demo: "https://pypi.org/project/gom/",
@@ -50,13 +61,14 @@ const projectsData = [
     ],
   },
   {
-    category: "Other",
+    category: t("Other"),
     items: [
       {
         id: "4",
         title: "npm-to-yarn",
-        description:
-          "An npm package for converting CLI commands between npm, Yarn, and pnpm.",
+        description: t(
+          "An npm package for converting CLI commands between npm, Yarn, and pnpm."
+        ),
         tech: ["JavaScript", "Node.js", "CLI"],
         links: {
           github: "https://github.com/bgub/npm-to-yarn",
@@ -66,8 +78,9 @@ const projectsData = [
       {
         id: "5",
         title: "Squirrelly",
-        description:
-          "A lightweight JavaScript template engine with support for helpers, partials, filters, etc. I'm not actively developing it, but this is the project that helped me get into open source.",
+        description: t(
+          "A lightweight JavaScript template engine with support for helpers, partials, filters, etc. I'm not actively developing it, but this is the project that helped me get into open source."
+        ),
         tech: ["JavaScript", "Template Engine"],
         links: {
           demo: "https://squirrelly.js.org",
@@ -78,13 +91,14 @@ const projectsData = [
     ],
   },
   {
-    category: "Old",
+    category: t("Old"),
     items: [
       {
         id: "6",
         title: "Splashpad",
-        description:
-          "A Chrome extension that turns your new tab page into a customizable dashboard.",
+        description: t(
+          "A Chrome extension that turns your new tab page into a customizable dashboard."
+        ),
         tech: ["JavaScript", "Chrome Extension"],
         links: {
           demo: "https://chrome.google.com/webstore/detail/splashpad/fainejfmhojphdbbfmpomeknplpdnndb",
@@ -94,8 +108,9 @@ const projectsData = [
       {
         id: "7",
         title: "Esperaboard",
-        description:
-          "A Chrome extension to transform characters written in the Esperanto 'x-system' into Esperanto characters while typing.",
+        description: t(
+          "A Chrome extension to transform characters written in the Esperanto 'x-system' into Esperanto characters while typing."
+        ),
         tech: ["JavaScript", "Chrome Extension"],
         links: {
           demo: "https://chrome.google.com/webstore/detail/esperaboard-esperanto-x-s/nkgbomaneihlabdhjihdhpdlehahahoc",
@@ -105,8 +120,9 @@ const projectsData = [
       {
         id: "8",
         title: "Tic-Tac-Too",
-        description:
-          "AI tic-tac-toe bot built with TensorFlow.js. I built this as a teenager, while just starting to learn about ML, so it's definitely not the best code. But it was a great learning experience.",
+        description: t(
+          "AI tic-tac-toe bot built with TensorFlow.js. I built this as a teenager, while just starting to learn about ML, so it's definitely not the best code. But it was a great learning experience."
+        ),
         tech: ["JavaScript", "TensorFlow.js", "AI"],
         links: {
           demo: "https://tictactoe.bengubler.com/",
@@ -126,25 +142,35 @@ const borderColors = [
   "border-orange-500/30 hover:border-orange-500/60 dark:border-orange-500/20 dark:hover:border-orange-500/40",
 ];
 
-const projects = projectsData.map((section) => ({
-  ...section,
-  items: section.items.map((project, index) => ({
-    ...project,
-    borderColor: borderColors[index % borderColors.length],
-  })),
-}));
+const getProjects = (t: (content: string, options?: InlineTranslationOptions) => string) => {
+  const projectsData = getProjectsData(t);
+  return projectsData.map((section) => ({
+    ...section,
+    items: section.items.map((project, index) => ({
+      ...project,
+      borderColor: borderColors[index % borderColors.length],
+    })),
+  }));
+};
 
 export default function ProjectsPage() {
+  const t = useGT();
+  const projects = getProjects(t);
+  
   return (
     <div className="space-y-12">
       <header className="space-y-4">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-          Projects
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-          A collection of things I've built over the years, from open-source
-          libraries to web applications and browser extensions.
-        </p>
+        <T>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+            Projects
+          </h1>
+        </T>
+        <T>
+          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+            A collection of things I've built over the years, from open-source
+            libraries to web applications and browser extensions.
+          </p>
+        </T>
       </header>
 
       {projects.map((section) => (

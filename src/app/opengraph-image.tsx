@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { T } from "gt-next";
 
 // Image metadata
 export const alt = "Ben Gubler - Web Developer";
@@ -64,15 +65,17 @@ export default async function Image() {
           >
             bengubler.com
           </div>
-          <div
-            style={{
-              fontSize: "24px",
-              color: "#64748b",
-              fontWeight: "500",
-            }}
-          >
-            Hello! Ahoj! Привет!
-          </div>
+          <T>
+            <div
+              style={{
+                fontSize: "24px",
+                color: "#64748b",
+                fontWeight: "500",
+              }}
+            >
+              Hello! Ahoj! Привет!
+            </div>
+          </T>
         </div>
 
         {/* Main content */}
@@ -90,37 +93,41 @@ export default async function Image() {
           }}
         >
           {/* Title */}
-          <h1
-            style={{
-              fontSize: "72px",
-              fontWeight: "800",
-              color: "#0f172a",
-              marginBottom: "32px",
-              lineHeight: 1.1,
-              letterSpacing: "-0.025em",
-              textAlign: "center",
-              background: "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Ben Gubler
-          </h1>
+          <T>
+            <h1
+              style={{
+                fontSize: "72px",
+                fontWeight: "800",
+                color: "#0f172a",
+                marginBottom: "32px",
+                lineHeight: 1.1,
+                letterSpacing: "-0.025em",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Ben Gubler
+            </h1>
+          </T>
 
           {/* Description */}
-          <p
-            style={{
-              fontSize: "32px",
-              color: "#475569",
-              lineHeight: 1.4,
-              textAlign: "center",
-              fontWeight: "400",
-              marginBottom: "40px",
-            }}
-          >
-            Web Developer, AI Student & Language Enthusiast
-          </p>
+          <T>
+            <p
+              style={{
+                fontSize: "32px",
+                color: "#475569",
+                lineHeight: 1.4,
+                textAlign: "center",
+                fontWeight: "400",
+                marginBottom: "40px",
+              }}
+            >
+              Web Developer, AI Student & Language Enthusiast
+            </p>
+          </T>
 
           {/* Decorative element */}
           <div
