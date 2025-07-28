@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Brain, Loader2, Sparkles, X } from "lucide-react";
 import { useState } from "react";
+import { useGT, T, Branch, Var } from "gt-next";
 
 interface FloatingELI5Props {
   content: string;
@@ -14,6 +15,7 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isExplaining, setIsExplaining] = useState(false);
   const [explanation, setExplanation] = useState("");
+  const t = useGT();
 
   const handleExplain = async () => {
     setIsExplaining(true);
@@ -49,7 +51,7 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
     } catch (error) {
       console.error("Error getting explanation:", error);
       setExplanation(
-        "Sorry, I couldn't explain this right now. Please try again!"
+        t("Sorry, I couldn't explain this right now. Please try again!")
       );
     } finally {
       setIsExplaining(false);
@@ -74,7 +76,7 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
         <Button
           onClick={openModal}
           className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
-          title="Explain Like I'm 5"
+          title={t("Explain Like I'm 5")}
         >
           <Brain className="h-6 w-6" />
         </Button>
@@ -89,12 +91,14 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Brain className="h-6 w-6" />
-                  <div>
-                    <h3 className="text-xl font-bold">Explain Like I'm 5</h3>
-                    <p className="text-blue-100 text-sm">
-                      Making complex topics simple!
-                    </p>
-                  </div>
+                  <T>
+                    <div>
+                      <h3 className="text-xl font-bold">Explain Like I'm 5</h3>
+                      <p className="text-blue-100 text-sm">
+                        Making complex topics simple!
+                      </p>
+                    </div>
+                  </T>
                 </div>
                 <Button
                   onClick={closeModal}
@@ -115,62 +119,77 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
                   variant="outline"
                   className="bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-800"
                 >
-                  {isExplaining
-                    ? "🔍 Reading & Simplifying..."
-                    : "🎉 Ready to Read!"}
+                  <T>
+                    <Branch
+                      branch={isExplaining.toString()}
+                      true="🔍 Reading & Simplifying..."
+                      false="🎉 Ready to Read!"
+                    />
+                  </T>
                 </Badge>
                 <span className="text-sm text-muted-foreground">
-                  {content.split(" ").length} words • "{title}"
+                  <T>
+                    <Var>{content.split(" ").length}</Var> words • "<Var>{title}</Var>"
+                  </T>
                 </span>
               </div>
 
               {/* Explanation */}
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                {explanation ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Sparkles className="h-5 w-5 text-blue-600" />
-                      <span className="font-medium text-blue-700 dark:text-blue-300">
-                        Simple Explanation
-                      </span>
-                    </div>
+                <T>
+                  <Branch
+                    branch={explanation ? "hasExplanation" : isExplaining ? "isExplaining" : "ready"}
+                    hasExplanation={
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Sparkles className="h-5 w-5 text-blue-600" />
+                          <span className="font-medium text-blue-700 dark:text-blue-300">
+                            Simple Explanation
+                          </span>
+                        </div>
 
-                    <div className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
-                      {explanation.split("\n").map(
-                        (paragraph, index) =>
-                          paragraph.trim() && (
-                            <p key={index} className="mb-4">
-                              {paragraph}
-                            </p>
-                          )
-                      )}
-                      {isExplaining && (
-                        <span className="inline-block w-3 h-6 bg-blue-500 animate-pulse ml-1" />
-                      )}
-                    </div>
-                  </div>
-                ) : isExplaining ? (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-blue-600 mb-4" />
-                    <p className="text-blue-700 dark:text-blue-300 font-medium">
-                      Reading your blog post...
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Breaking it down into simple terms
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <Brain className="h-12 w-12 text-blue-400 mb-4" />
-                    <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Ready to Simplify!
-                    </p>
-                    <p className="text-sm text-muted-foreground text-center">
-                      I'll read through "{title}" and explain it like you're 5
-                      years old
-                    </p>
-                  </div>
-                )}
+                        <div className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+                          <Var>
+                            {explanation.split("\n").map(
+                              (paragraph, index) =>
+                                paragraph.trim() && (
+                                  <p key={index} className="mb-4">
+                                    {paragraph}
+                                  </p>
+                                )
+                            )}
+                            {isExplaining && (
+                              <span className="inline-block w-3 h-6 bg-blue-500 animate-pulse ml-1" />
+                            )}
+                          </Var>
+                        </div>
+                      </div>
+                    }
+                    isExplaining={
+                      <div className="flex flex-col items-center justify-center py-12">
+                        <Loader2 className="h-8 w-8 animate-spin text-blue-600 mb-4" />
+                        <p className="text-blue-700 dark:text-blue-300 font-medium">
+                          Reading your blog post...
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Breaking it down into simple terms
+                        </p>
+                      </div>
+                    }
+                    ready={
+                      <div className="flex flex-col items-center justify-center py-12">
+                        <Brain className="h-12 w-12 text-blue-400 mb-4" />
+                        <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Ready to Simplify!
+                        </p>
+                        <p className="text-sm text-muted-foreground text-center">
+                          I'll read through "<Var>{title}</Var>" and explain it like you're 5
+                          years old
+                        </p>
+                      </div>
+                    }
+                  />
+                </T>
               </div>
 
               {/* Action Buttons */}
@@ -180,20 +199,30 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
                   disabled={isExplaining}
                   className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
                 >
-                  {isExplaining ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Explaining...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      {explanation ? "Explain Again" : "Start Explaining"}
-                    </>
-                  )}
+                  <T>
+                    <Branch
+                      branch={isExplaining.toString()}
+                      true={
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Explaining...
+                        </>
+                      }
+                      false={
+                        <>
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          <Branch
+                            branch={explanation ? "again" : "start"}
+                            again="Explain Again"
+                            start="Start Explaining"
+                          />
+                        </>
+                      }
+                    />
+                  </T>
                 </Button>
                 <Button onClick={closeModal} variant="outline" className="px-6">
-                  Close
+                  <T>Close</T>
                 </Button>
               </div>
             </div>

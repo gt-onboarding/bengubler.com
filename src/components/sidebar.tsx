@@ -13,31 +13,34 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useGT, T } from "gt-next/client";
 
-const navigation = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/about", icon: User },
+const getNavigation = (t: (content: string) => string) => [
+  { name: t("Home"), href: "/", icon: Home },
+  { name: t("About"), href: "/about", icon: User },
   {
-    name: "My Stack",
+    name: t("My Stack"),
     href: "/about/my-stack",
     icon: Code,
     isSubItem: true,
     parent: "About",
   },
-  { name: "Projects", href: "/projects", icon: FolderOpen },
+  { name: t("Projects"), href: "/projects", icon: FolderOpen },
   {
-    name: "Language Learning",
+    name: t("Language Learning"),
     href: "/language-learning",
     icon: Languages,
     isSubItem: true,
     parent: "Projects",
   },
-  { name: "Posts", href: "/posts", icon: FileText },
-  { name: "Contact", href: "/contact", icon: Mail },
+  { name: t("Posts"), href: "/posts", icon: FileText },
+  { name: t("Contact"), href: "/contact", icon: Mail },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const t = useGT();
+  const navigation = getNavigation(t);
 
   return (
     <div className="hidden md:fixed md:inset-y-0 md:z-50 md:flex md:w-64 md:flex-col">
@@ -55,9 +58,9 @@ export function Sidebar() {
               />
             </div>
             <div className="space-y-1 min-w-0 flex-1">
-              <h2 className="text-lg font-semibold text-foreground group-hover:text-foreground/80 transition-colors">
+              <T><h2 className="text-lg font-semibold text-foreground group-hover:text-foreground/80 transition-colors">
                 Ben Gubler
-              </h2>
+              </h2></T>
               <p className="text-sm text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">
                 @bgub
               </p>
